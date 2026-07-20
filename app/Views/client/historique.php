@@ -135,6 +135,27 @@
         }
     </style>
 </head>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Historique des transactions - KazziPay</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        body { background: #f4f6f9; font-family: 'Segoe UI', sans-serif; }
+        .page-wrapper { max-width: 1000px; margin: 30px auto; padding: 0 15px; }
+        .brand-mini { display: flex; align-items: center; gap: 10px; margin-bottom: 25px; }
+        .brand-mini img { height: 40px; }
+        .brand-mini span { font-size: 1.6rem; font-weight: bold; color: #2c3e50; }
+        .card-historique { background: white; border-radius: 16px; padding: 30px; box-shadow: 0 8px 30px rgba(0,0,0,0.05); }
+        .client-badge { background: #eef2ff; border-radius: 10px; padding: 10px 18px; margin-bottom: 25px; display: flex; align-items: center; gap: 10px; font-size: 0.95rem; }
+        .sens-plus { color: #198754; font-weight: 500; }
+        .sens-moins { color: #dc3545; font-weight: 500; }
+        .btn-retour { background: #f8f9fa; border: 1px solid #dee2e6; border-radius: 8px; padding: 8px 18px; color: #2c3e50; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; transition: 0.2s; }
+        .btn-retour:hover { background: #e9ecef; }
+        table th { background: #f8f9fa; font-weight: 600; }
+    </style>
+</head>
 <body>
 <div class="page-wrapper">
     <!-- Mini entête de marque -->
@@ -160,6 +181,32 @@
             </span>
         </div>
 
+        <!-- Formulaire de filtres -->
+        <form method="get" class="row g-2 mb-4 p-3 bg-light rounded-3">
+            <div class="col-md-3">
+                <label for="type" class="form-label fw-semibold small">Type de transaction</label>
+                <select name="type" id="type" class="form-select form-select-sm">
+                    <option value="">Tous</option>
+                    <option value="depot"     <?= ($filtres['type'] ?? '') == 'depot'     ? 'selected' : '' ?>>Dépôt</option>
+                    <option value="retrait"   <?= ($filtres['type'] ?? '') == 'retrait'   ? 'selected' : '' ?>>Retrait</option>
+                    <option value="transfert" <?= ($filtres['type'] ?? '') == 'transfert' ? 'selected' : '' ?>>Transfert</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label for="date_debut" class="form-label fw-semibold small">Du</label>
+                <input type="date" name="date_debut" id="date_debut" class="form-control form-control-sm" value="<?= esc($filtres['date_debut'] ?? '') ?>">
+            </div>
+            <div class="col-md-3">
+                <label for="date_fin" class="form-label fw-semibold small">Au</label>
+                <input type="date" name="date_fin" id="date_fin" class="form-control form-control-sm" value="<?= esc($filtres['date_fin'] ?? '') ?>">
+            </div>
+            <div class="col-md-3 d-flex align-items-end">
+                <button type="submit" class="btn btn-primary btn-sm w-100">
+                    <i class="bi bi-funnel"></i> Filtrer
+                </button>
+            </div>
+        </form>
+
         <?php if (empty($transactions)): ?>
             <div class="alert alert-info flash-message d-flex align-items-center" role="alert">
                 <i class="bi bi-info-circle-fill me-2"></i>
@@ -183,7 +230,6 @@
                             $detail = '';
                             $sens = '';
                             
-                            // Déterminer le sens et le détail selon que le client est émetteur ou récepteur
                             if ($t['emetteur_id'] == $client['id']) {
                                 if ($t['type'] == 'retrait') {
                                     $typeLabel = 'Retrait';
@@ -233,5 +279,7 @@
         </div>
     </div>
 </div>
+
+<script src="/assets/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

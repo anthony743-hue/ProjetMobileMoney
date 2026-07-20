@@ -65,9 +65,9 @@ class TransactionModel extends Model
     /**
      * Récupère l'historique des transactions d'un client (émetteur ou récepteur).
      */
-    public function getHistoriqueClient(int $clientId, int $limit = 50): array
-    {
-        return $this->select('transactions.*, 
+public function getHistoriqueClient(int $clientId, array $filtres = [], int $limit = 50): array
+{
+    $builder = $this->select('transactions.*, 
                               e.telephone AS emetteur_telephone, 
                               r.telephone AS recepteur_telephone')
                     ->join('clients e', 'e.id = transactions.emetteur_id', 'left')
@@ -75,9 +75,25 @@ class TransactionModel extends Model
                     ->groupStart()
                         ->where('emetteur_id', $clientId)
                         ->orWhere('recepteur_id', $clientId)
-                    ->groupEnd()
-                    ->orderBy('date_transaction', 'DESC')
-                    ->limit($limit)
-                    ->find();
+                    ->groupEnd();
+
+    // Filtre par type
+    if (!empty($filtres['type'])) {
+        $builder->where('transactions.type', $filtres['type']);
     }
+
+    // Filtre par date de début
+    if (!empty($filtres['date_debut'])) {
+        $builder->where('date_transaction >=', $filtres['date_debut'] . ' 00:00:00');
+    }
+
+    // Filtre par date de fin
+    if (!empty($filtres['date_fin'])) {
+        $builder->where('date_transaction <=', $filtres['date_fin'] . ' 23:59:59');
+    }
+
+    return $builder->orderBy('date_transaction', 'DESC')
+                   ->limit($limit)
+                   ->find();
+}
 }

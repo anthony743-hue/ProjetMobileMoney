@@ -251,12 +251,20 @@ public function historique()
         return redirect()->to('/login')->with('error', 'Veuillez vous connecter.');
     }
 
+    // Récupération des filtres depuis l'URL
+    $filtres = [
+        'type'       => $this->request->getGet('type'),
+        'date_debut' => $this->request->getGet('date_debut'),
+        'date_fin'   => $this->request->getGet('date_fin'),
+    ];
+
     $transactionModel = new \App\Models\TransactionModel();
-    $transactions = $transactionModel->getHistoriqueClient($client['id']);
+    $transactions = $transactionModel->getHistoriqueClient($client['id'], $filtres);
 
     return view('client/historique', [
         'client'       => $client,
         'transactions' => $transactions,
+        'filtres'      => $filtres,   // pour réafficher les valeurs dans le formulaire
     ]);
 }
 
