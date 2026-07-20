@@ -31,3 +31,20 @@ FROM regles_frais
 WHERE operateur_id = 1
   AND type_transaction = 'transfert'
   AND 2000 BETWEEN montant_min AND montant_max;
+
+
+
+
+
+  INSERT INTO clients (telephone, prenom, nom) VALUES
+('0379876543', 'Claire', 'Rabe'),
+('0329876543', 'David', 'Rakoto'),
+('0375555555', 'Emma', 'Andri');
+
+
+
+DROP TABLE IF EXISTS transactions;
+DROP TABLE IF EXISTS regles_frais;
+DROP TABLE IF EXISTS prefixes_operateur;
+DROP TABLE IF EXISTS clients;
+DROP TABLE IF EXISTS operateurs;

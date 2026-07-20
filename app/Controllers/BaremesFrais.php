@@ -181,4 +181,29 @@ class BaremesFrais extends BaseController
             ->to('/baremes?type=' . $type)
             ->with('success', 'Barème supprimé avec succès.');
     }
+
+
+
+
+    public function situation()
+{
+    $operateurId = 1; // À remplacer par l'opérateur connecté (session, etc.)
+
+    $transactionModel = new \App\Models\TransactionModel();
+
+    // Récupération des statistiques
+    $gainsParType = $transactionModel->getGainsSummary($operateurId);
+
+    // Calcul du total général des frais
+    $totalGains = 0;
+    foreach ($gainsParType as $stats) {
+        $totalGains += $stats['frais_total'];
+    }
+
+    return view('baremes/situation', [
+        'gainsParType' => $gainsParType,
+        'totalGains'   => $totalGains,
+        'operateurId'  => $operateurId,
+    ]);
+}
 }
