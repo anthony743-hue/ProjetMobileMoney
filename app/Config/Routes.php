@@ -29,3 +29,8 @@ $routes->get('client/depot', 'Client::depot');
 $routes->post('client/depot/traitement', 'Client::traitementDepot');
 $routes->get('client/retrait', 'Client::retrait');
 $routes->post('client/retrait/traitement', 'Client::traitementRetrait');
+
+
+
+$routes->get('client/transfert', 'Client::transfert');
+$routes->post('client/transfert/traitement', 'Client::traitementTransfert');

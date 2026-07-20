@@ -149,4 +149,99 @@ class Client extends BaseController
             return redirect()->back()->with('error', 'Erreur lors de l\'enregistrement de la transaction.');
         }
     }
+
+
+
+// Afficher le formulaire de transfert
+public function transfert()
+{
+    $client = session()->get('client');
+    if (!$client) {
+        return redirect()->to('/login')->with('error', 'Veuillez vous connecter.');
+    }
+
+    return view('client/transfert', ['client' => $client]);
+}
+
+// Traiter le transfert
+public function traitementTransfert()
+{
+    $client = session()->get('client');
+    if (!$client) {
+        return redirect()->to('/login')->with('error', 'Veuillez vous connecter.');
+    }
+
+    $montant = (float) $this->request->getPost('montant');
+    $telephoneDestinataire = trim($this->request->getPost('telephone'));
+
+    if ($montant <= 0 || empty($telephoneDestinataire)) {
+        return redirect()->back()->with('error', 'Montant ou numéro invalide.');
+    }
+
+    // Ne pas se transférer à soi-même
+    if ($telephoneDestinataire === $client['telephone']) {
+        return redirect()->back()->with('error', 'Vous ne pouvez pas transférer vers votre propre numéro.');
+    }
+
+    $operateurId = 1;
+    $type = 'transfert';
+
+    // Calcul des frais
+    $regleFraisModel = new \App\Models\RegleFraisModel();
+    $frais = $regleFraisModel->getFrais($operateurId, $type, $montant);
+
+    if ($frais === null) {
+        return redirect()->back()->with('error', 'Aucun barème défini pour ce montant.');
+    }
+
+    // Vérifier solde de l'émetteur
+    $totalDebit = $montant + $frais;
+    if ($client['solde'] < $totalDebit) {
+        return redirect()->back()->with('error', "Solde insuffisant. Vous avez {$client['solde']} Ar, le transfert coûte {$totalDebit} Ar.");
+    }
+
+    // Récupérer ou créer le destinataire
+    $clientModel = new \App\Models\ClientModel();
+    $destinataire = $clientModel->where('telephone', $telephoneDestinataire)->first();
+
+    if (!$destinataire) {
+        // Création automatique du destinataire s'il n'existe pas
+        $destinataireId = $clientModel->insert([
+            'telephone' => $telephoneDestinataire,
+            'solde'     => 0.0,
+        ], true);
+
+        if (!$destinataireId) {
+            return redirect()->back()->with('error', 'Erreur lors de la création du compte destinataire.');
+        }
+        $destinataire = $clientModel->find($destinataireId);
+    }
+
+    // Enregistrement de la transaction
+    $transactionModel = new \App\Models\TransactionModel();
+    $transactionData = [
+        'type'          => $type,
+        'montant'       => $montant,
+        'frais'         => $frais,
+        'emetteur_id'   => $client['id'],
+        'recepteur_id'  => $destinataire['id'],
+        'operateur_id'  => $operateurId,
+        'statut'        => 'termine',
+    ];
+
+    if ($transactionModel->insert($transactionData)) {
+        // Mise à jour du solde en session
+        $clientUpdated = $clientModel->find($client['id']);
+        session()->set('client', array_merge(session()->get('client'), ['solde' => $clientUpdated['solde']]));
+
+        return redirect()->to('/client/espace')->with('success',
+            "Transfert de {$montant} Ar vers {$telephoneDestinataire} effectué. Frais : {$frais} Ar. Nouveau solde : {$clientUpdated['solde']} Ar."
+        );
+    } else {
+        return redirect()->back()->with('error', 'Erreur lors de l\'enregistrement du transfert.');
+    }
+}
+
+
+
 }
