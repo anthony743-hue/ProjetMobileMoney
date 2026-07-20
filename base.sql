@@ -91,6 +91,10 @@ BEGIN
     WHERE id = NEW.recepteur_id AND NEW.type = 'transfert';
 END;
 
+
+
+ALTER TABLE transactions ADD COLUMN groupe_id TEXT;
+
 -- =============================================================================
 -- 3. DONNÉES DE TEST
 -- =============================================================================

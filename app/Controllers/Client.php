@@ -327,4 +327,145 @@ public function traitementRetrait()
             'filtres'      => $filtres,
         ]);
     }
+
+
+
+
+
+// Afficher le formulaire d'envoi multiple
+public function transfertMultiple()
+{
+    $client = session()->get('client');
+    if (!$client) {
+        return redirect()->to('/login')->with('error', 'Veuillez vous connecter.');
+    }
+    return view('client/transfert_multiple', ['client' => $client]);
+}
+
+// Traiter l'envoi multiple
+public function traitementTransfertMultiple()
+{
+    $client = session()->get('client');
+    if (!$client) {
+        return redirect()->to('/login')->with('error', 'Veuillez vous connecter.');
+    }
+
+    $montantTotal = (float) $this->request->getPost('montant_total');
+    $numeros = $this->request->getPost('numeros'); // tableau de numéros
+
+    if ($montantTotal <= 0 || empty($numeros) || !is_array($numeros)) {
+        return redirect()->back()->with('error', 'Montant invalide ou aucun destinataire.');
+    }
+
+    // Nettoyer les numéros (enlever les vides et les doublons)
+    $numeros = array_unique(array_filter(array_map('trim', $numeros)));
+    $nbDestinataires = count($numeros);
+
+    if ($nbDestinataires === 0) {
+        return redirect()->back()->with('error', 'Aucun numéro valide.');
+    }
+
+    // Interdire l'envoi à soi-même
+    if (in_array($client['telephone'], $numeros)) {
+        return redirect()->back()->with('error', 'Vous ne pouvez pas vous inclure dans les destinataires.');
+    }
+
+    // Montant par destinataire (arrondi à l'entier inférieur, le reste est ignoré)
+    $montantParDestinataire = floor($montantTotal / $nbDestinataires);
+    if ($montantParDestinataire <= 0) {
+        return redirect()->back()->with('error', 'Le montant par destinataire est trop faible.');
+    }
+
+    $operateurId = 1; // Votre opérateur
+    $regleFraisModel = new \App\Models\RegleFraisModel();
+    $prefixModel = new \App\Models\PrefixeOperateurModel();
+    $operateurModel = new \App\Models\OperateurModel();
+    $operateurEmetteur = $operateurModel->find($operateurId);
+    $tauxCommission = (float)($operateurEmetteur['commission_inter_operateur'] ?? 0);
+
+    $totalDebitGlobal = 0;
+    $transactions = []; // pour stocker les données avant insertion
+
+    foreach ($numeros as $destinataireTel) {
+        // Déterminer si le destinataire est externe
+        $operateurDest = $prefixModel->getOperateurByTelephone($destinataireTel);
+        $estExterne = ($operateurDest && $operateurDest['id'] != $operateurId);
+
+        // Frais fixes
+        $fraisFixes = $regleFraisModel->getFrais($operateurId, 'transfert', $montantParDestinataire);
+        if ($fraisFixes === null) {
+            $fraisFixes = 0.0;
+        }
+
+        // Commission éventuelle
+        $commission = 0.0;
+        if ($estExterne && $tauxCommission > 0) {
+            $commission = $montantParDestinataire * ($tauxCommission / 100.0);
+        }
+
+        $fraisTotal = $fraisFixes + $commission;
+        $debitLigne = $montantParDestinataire + $fraisTotal;
+        $totalDebitGlobal += $debitLigne;
+
+        // Vérifier si le destinataire existe, sinon le créer
+        $clientModel = new \App\Models\ClientModel();
+        $destinataire = $clientModel->where('telephone', $destinataireTel)->first();
+        if (!$destinataire) {
+            $destinataireId = $clientModel->insert(['telephone' => $destinataireTel, 'solde' => 0.0], true);
+            if (!$destinataireId) {
+                return redirect()->back()->with('error', "Erreur lors de la création du compte $destinataireTel.");
+            }
+            $destinataire = $clientModel->find($destinataireId);
+        }
+
+        $transactions[] = [
+            'type'              => 'transfert',
+            'montant'           => $montantParDestinataire,
+            'frais'             => $fraisTotal,
+            'commission_externe'=> $commission,
+            'emetteur_id'       => $client['id'],
+            'recepteur_id'      => $destinataire['id'],
+            'operateur_id'      => $operateurId,
+            'statut'            => 'termine',
+        ];
+    }
+
+    // Vérifier le solde global
+    if ($client['solde'] < $totalDebitGlobal) {
+        return redirect()->back()->with('error', "Solde insuffisant. Vous avez {$client['solde']} Ar, vous avez besoin de {$totalDebitGlobal} Ar.");
+    }
+
+    // Générer un identifiant de groupe unique
+    $groupeId = uniqid('G-', true);
+
+    // Insérer toutes les transactions dans une transaction SQL (si possible) ou une boucle
+    $transactionModel = new \App\Models\TransactionModel();
+    $db = \Config\Database::connect();
+    $db->transStart(); // Début de transaction
+
+    foreach ($transactions as &$t) {
+        $t['groupe_id'] = $groupeId;
+        $transactionModel->insert($t);
+    }
+
+    $db->transComplete(); // Valide tout ou rollback
+
+    if ($db->transStatus() === false) {
+        return redirect()->back()->with('error', 'Erreur lors de l\'enregistrement des transferts.');
+    }
+
+    // Mettre à jour le solde en session
+    $clientModel = new \App\Models\ClientModel();
+    $clientUpdated = $clientModel->find($client['id']);
+    session()->set('client', array_merge(session()->get('client'), ['solde' => $clientUpdated['solde']]));
+
+    return redirect()->to('/client/espace')->with('success',
+        "Envoi multiple effectué : {$nbDestinataires} transferts de {$montantParDestinataire} Ar chacun. Total débité : {$totalDebitGlobal} Ar."
+    );
+}
+
+
+
+
+
 }

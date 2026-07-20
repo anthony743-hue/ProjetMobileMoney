@@ -8,6 +8,16 @@ class ClientModel extends Model
 {
     protected $table      = 'clients';
     protected $primaryKey = 'id';
+
+    // Ajout des champs autorisés en insertion/modification
+    protected $allowedFields = [
+        'telephone',
+        'prenom',
+        'nom',
+        'solde',
+        'date_creation',
+    ];
+
     protected $returnType = 'array';
     protected $useTimestamps = false;
 

@@ -18,6 +18,7 @@ class TransactionModel extends Model
         'recepteur_id',
         'operateur_id',
         'statut',
+        'groupe_id'
     ];
 
     protected $returnType = 'array';
@@ -120,5 +121,10 @@ public function getReversementsParOperateur(int $operateurId): array
     return $query->getResultArray();
 }
 
+// Optionnel : récupérer les transactions groupées par groupe_id
+public function getGroupe(string $groupeId): array
+{
+    return $this->where('groupe_id', $groupeId)->findAll();
+}
 
 }

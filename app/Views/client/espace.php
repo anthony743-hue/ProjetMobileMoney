@@ -159,6 +159,17 @@
             box-shadow: 0 12px 24px rgba(52, 152, 219, 0.4);
             color: white;
         }
+        /* Nouveau style pour le bouton Multiple */
+        .btn-multiple {
+            background: #8e44ad;
+            box-shadow: 0 8px 20px rgba(142, 68, 173, 0.3);
+        }
+        .btn-multiple:hover {
+            background: #7d3c98;
+            transform: translateY(-2px);
+            box-shadow: 0 12px 24px rgba(142, 68, 173, 0.4);
+            color: white;
+        }
         .btn-historique {
             border-radius: 12px;
             padding: 12px 20px;
@@ -185,15 +196,12 @@
 </head>
 <body>
 <div class="page-wrapper">
-    <!-- Mini en-tête de marque -->
     <div class="brand-mini">
         <img src="https://cdn-icons-png.flaticon.com/512/2331/2331970.png" alt="KazziPay Logo">
         <span>KazziPay</span>
     </div>
 
-    <!-- Carte espace client -->
     <div class="card-espace">
-        <!-- En-tête : bienvenue + déconnexion -->
         <div class="welcome-header">
             <div class="welcome-text">
                 <i class="bi bi-person-circle me-2"></i><?= esc($client['prenom'] ?: $client['telephone']) ?>
@@ -204,7 +212,6 @@
         </div>
         <hr>
 
-        <!-- Solde -->
         <div class="solde-card">
             <div class="solde-title">
                 <i class="bi bi-wallet2"></i> Votre solde
@@ -214,7 +221,6 @@
             </div>
         </div>
 
-        <!-- Boutons d'actions -->
         <div class="action-buttons">
             <a href="/client/depot" class="btn-action btn-depot">
                 <i class="bi bi-box-arrow-in-down"></i>
@@ -228,9 +234,12 @@
                 <i class="bi bi-arrow-left-right"></i>
                 Transfert
             </a>
+            <a href="/client/transfert-multiple" class="btn-action btn-multiple">
+                <i class="bi bi-people-fill"></i>
+                Multiple
+            </a>
         </div>
 
-        <!-- Historique -->
         <a href="/client/historique" class="btn-historique">
             <i class="bi bi-clock-history"></i> Historique des transactions
         </a>

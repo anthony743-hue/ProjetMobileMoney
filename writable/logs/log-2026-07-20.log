@@ -725,3 +725,28 @@ DEBUG - 2026-07-20 15:19:59 --> Session: Class initialized using 'CodeIgniter\Se
 DEBUG - 2026-07-20 15:20:13 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
 DEBUG - 2026-07-20 15:20:13 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
 DEBUG - 2026-07-20 15:20:26 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-07-20 15:30:48 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-07-20 15:30:56 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-07-20 15:31:01 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-07-20 15:31:11 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-07-20 15:34:00 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-07-20 15:34:06 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-07-20 15:35:09 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-07-20 15:35:24 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-07-20 15:36:13 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+CRITICAL - 2026-07-20 15:36:13 --> CodeIgniter\Database\Exceptions\DataException: Allowed fields must be specified for model: "App\Models\ClientModel"
+[Method: POST, Route: client/transfert-multiple/traitement]
+in SYSTEMPATH/Model.php on line 680.
+ 1 SYSTEMPATH/Model.php(680): CodeIgniter\Database\Exceptions\DataException::forInvalidAllowedFields()
+ 2 SYSTEMPATH/BaseModel.php(880): CodeIgniter\Model->doProtectFieldsForInsert()
+ 3 SYSTEMPATH/Model.php(670): CodeIgniter\BaseModel->insert()
+ 4 APPPATH/Controllers/Client.php(414): CodeIgniter\Model->insert()
+ 5 SYSTEMPATH/CodeIgniter.php(974): App\Controllers\Client->traitementTransfertMultiple()
+ 6 SYSTEMPATH/CodeIgniter.php(520): CodeIgniter\CodeIgniter->runController()
+ 7 SYSTEMPATH/CodeIgniter.php(363): CodeIgniter\CodeIgniter->handleRequest()
+ 8 SYSTEMPATH/Boot.php(417): CodeIgniter\CodeIgniter->run()
+ 9 SYSTEMPATH/Boot.php(68): CodeIgniter\Boot::runCodeIgniter()
+10 FCPATH/index.php(59): CodeIgniter\Boot::bootWeb()
+11 SYSTEMPATH/rewrite.php(44): require_once('/home/user/Projets/SI/examen-final/ProjetMobileMoney/public/index.php')
+DEBUG - 2026-07-20 15:37:29 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.
+DEBUG - 2026-07-20 15:37:29 --> Session: Class initialized using 'CodeIgniter\Session\Handlers\FileHandler' driver.

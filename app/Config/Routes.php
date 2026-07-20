@@ -56,7 +56,12 @@ $routes->get('client/transfert', 'Client::transfert');
 $routes->post('client/transfert/traitement', 'Client::traitementTransfert');
 $routes->get('client/historique', 'Client::historique');
 
+$routes->get('client/transfert-multiple', 'Client::transfertMultiple');
+$routes->post('client/transfert-multiple/traitement', 'Client::traitementTransfertMultiple');
+
 // Routes d'authentification opérateur
 $routes->get('operateur/login', 'OperateurAuth::login');
 $routes->post('operateur/login', 'OperateurAuth::login');
 $routes->get('operateur/logout', 'OperateurAuth::logout');
+
+
