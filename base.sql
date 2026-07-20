@@ -84,7 +84,7 @@ END;
 INSERT INTO operateurs (nom, description) VALUES ('Orange Money', 'Opérateur principal');
 
 -- Préfixes
-INSERT INTO prefixes_operateur (operateur_id, prefixe) VALUES (1, '77'), (1, '78');
+INSERT INTO prefixes_operateur (operateur_id, prefixe) VALUES (1, '032'), (1, '037');
 
 -- Règles de frais (pour l’opérateur 1)
 INSERT INTO regles_frais (operateur_id, type_transaction, montant_min, montant_max, frais) VALUES
@@ -100,6 +100,6 @@ INSERT INTO regles_frais (operateur_id, type_transaction, montant_min, montant_m
 
 -- Clients
 INSERT INTO clients (telephone, prenom, nom) VALUES
-('771234567', 'Alice', 'Diop'),
-('781234567', 'Bob', 'Fall');
+('0371234567', 'Alice', 'Diop'),
+('0321234567', 'Bob', 'Fall');
 
