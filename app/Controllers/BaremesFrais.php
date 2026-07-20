@@ -3,16 +3,26 @@
 namespace App\Controllers;
 
 use App\Models\RegleFraisModel;
+use App\Models\TransactionModel;
 
 class BaremesFrais extends BaseController
 {
+    /**
+     * Retourne l'ID de l'opérateur connecté.
+     * (la session est garantie par le filtre)
+     */
+    private function getOperateurId(): int
+    {
+        return session()->get('operateur')['id'];
+    }
+
+    // Liste des barèmes
     public function index()
     {
-        $operateurId = 1; // À remplacer par la récupération depuis session/utilisateur
+        $operateurId = $this->getOperateurId();
         $typeTransaction = $this->request->getVar('type') ?? 'depot';
 
         $model = new RegleFraisModel();
-
         $regles = $model->getRegles($operateurId, $typeTransaction);
 
         return view('baremes/liste', [
@@ -22,83 +32,59 @@ class BaremesFrais extends BaseController
         ]);
     }
 
-
+    // Ajouter un barème
     public function ajouter()
     {
         $model = new RegleFraisModel();
 
         if ($this->request->getMethod() === 'POST') {
-
             $data = [
                 'operateur_id'     => $this->request->getPost('operateur_id'),
                 'type_transaction' => $this->request->getPost('type_transaction'),
                 'montant_min'      => (float) $this->request->getPost('montant_min'),
                 'montant_max'      => (float) $this->request->getPost('montant_max'),
                 'frais'             => (float) $this->request->getPost('frais'),
-                'est_pourcentage' => 0,
+                'est_pourcentage'  => 0,
             ];
 
-
-            // Vérification cohérence des montants
             if ($data['montant_min'] > $data['montant_max']) {
-                return redirect()
-                    ->back()
-                    ->with('error', 'Le montant minimum ne peut pas dépasser le montant maximum.');
+                return redirect()->back()->with('error', 'Le montant minimum ne peut pas dépasser le montant maximum.');
             }
 
-
-            // Vérification chevauchement
             if ($model->chevauchement(
                 $data['operateur_id'],
                 $data['type_transaction'],
                 $data['montant_min'],
                 $data['montant_max']
             )) {
-                return redirect()
-                    ->back()
-                    ->with('error', 'La tranche chevauche une règle existante.');
+                return redirect()->back()->with('error', 'La tranche chevauche une règle existante.');
             }
 
-
-            // Insertion
             if (!$model->insert($data)) {
-
-                return redirect()
-                    ->back()
-                    ->with('error', 'Erreur lors de l’ajout du barème.');
+                return redirect()->back()->with('error', 'Erreur lors de l’ajout du barème.');
             }
 
-
-            return redirect()
-                ->to('/baremes?type=' . $data['type_transaction'])
-                ->with('success', 'Barème ajouté avec succès.');
+            return redirect()->to('/baremes?type=' . $data['type_transaction'])->with('success', 'Barème ajouté avec succès.');
         }
-
 
         return view('baremes/form', [
             'regle'       => null,
-            'operateurId' => $this->request->getGet('operateur_id') ?? 1,
+            'operateurId' => $this->getOperateurId(),
             'type'        => $this->request->getGet('type') ?? 'depot',
         ]);
     }
 
-
-
+    // Modifier un barème
     public function modifier($id)
     {
         $model = new RegleFraisModel();
-
         $regle = $model->find($id);
 
         if (!$regle) {
-            return redirect()
-                ->to('/baremes')
-                ->with('error', 'Barème introuvable.');
+            return redirect()->to('/baremes')->with('error', 'Barème introuvable.');
         }
 
-
         if ($this->request->getMethod() === 'POST') {
-
             $data = [
                 'operateur_id'     => $this->request->getPost('operateur_id'),
                 'type_transaction' => $this->request->getPost('type_transaction'),
@@ -107,14 +93,9 @@ class BaremesFrais extends BaseController
                 'frais'             => (float) $this->request->getPost('frais'),
             ];
 
-
             if ($data['montant_min'] > $data['montant_max']) {
-
-                return redirect()
-                    ->back()
-                    ->with('error', 'Le montant minimum ne peut pas dépasser le montant maximum.');
+                return redirect()->back()->with('error', 'Le montant minimum ne peut pas dépasser le montant maximum.');
             }
-
 
             if ($model->chevauchement(
                 $data['operateur_id'],
@@ -123,26 +104,15 @@ class BaremesFrais extends BaseController
                 $data['montant_max'],
                 $id
             )) {
-
-                return redirect()
-                    ->back()
-                    ->with('error', 'La tranche chevauche une règle existante.');
+                return redirect()->back()->with('error', 'La tranche chevauche une règle existante.');
             }
-
 
             if (!$model->update($id, $data)) {
-
-                return redirect()
-                    ->back()
-                    ->with('error', 'Erreur lors de la modification.');
+                return redirect()->back()->with('error', 'Erreur lors de la modification.');
             }
 
-
-            return redirect()
-                ->to('/baremes?type=' . $data['type_transaction'])
-                ->with('success', 'Barème modifié avec succès.');
+            return redirect()->to('/baremes?type=' . $data['type_transaction'])->with('success', 'Barème modifié avec succès.');
         }
-
 
         return view('baremes/form', [
             'regle'       => $regle,
@@ -151,59 +121,42 @@ class BaremesFrais extends BaseController
         ]);
     }
 
-
-
+    // Supprimer un barème
     public function supprimer($id)
     {
         $model = new RegleFraisModel();
-
         $regle = $model->find($id);
 
         if (!$regle) {
-            return redirect()
-                ->to('/baremes')
-                ->with('error', 'Barème introuvable.');
+            return redirect()->to('/baremes')->with('error', 'Barème introuvable.');
         }
-
 
         $type = $regle['type_transaction'];
 
-
         if (!$model->delete($id)) {
-
-            return redirect()
-                ->back()
-                ->with('error', 'Erreur lors de la suppression.');
+            return redirect()->back()->with('error', 'Erreur lors de la suppression.');
         }
 
-
-        return redirect()
-            ->to('/baremes?type=' . $type)
-            ->with('success', 'Barème supprimé avec succès.');
+        return redirect()->to('/baremes?type=' . $type)->with('success', 'Barème supprimé avec succès.');
     }
 
-
-
-
+    // Situation des gains
     public function situation()
-{
-    $operateurId = 1; // À remplacer par l'opérateur connecté (session, etc.)
+    {
+        $operateurId = $this->getOperateurId();
 
-    $transactionModel = new \App\Models\TransactionModel();
+        $transactionModel = new TransactionModel();
+        $gainsParType = $transactionModel->getGainsSummary($operateurId);
 
-    // Récupération des statistiques
-    $gainsParType = $transactionModel->getGainsSummary($operateurId);
+        $totalGains = 0;
+        foreach ($gainsParType as $stats) {
+            $totalGains += $stats['frais_total'];
+        }
 
-    // Calcul du total général des frais
-    $totalGains = 0;
-    foreach ($gainsParType as $stats) {
-        $totalGains += $stats['frais_total'];
+        return view('baremes/situation', [
+            'gainsParType' => $gainsParType,
+            'totalGains'   => $totalGains,
+            'operateurId'  => $operateurId,
+        ]);
     }
-
-    return view('baremes/situation', [
-        'gainsParType' => $gainsParType,
-        'totalGains'   => $totalGains,
-        'operateurId'  => $operateurId,
-    ]);
-}
 }

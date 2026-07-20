@@ -79,7 +79,10 @@ END;
 
 
 
-
+-- Ajout du champ code_secret
+ALTER TABLE operateurs ADD COLUMN code_secret TEXT NOT NULL DEFAULT 'admin123';
+-- Mise à jour de l'opérateur 1 (Orange Money) avec un code par défaut
+UPDATE operateurs SET code_secret = 'admin123' WHERE id = 1;
 -- Opérateur Orange Money
 INSERT INTO operateurs (nom, description) VALUES ('Orange Money', 'Opérateur principal');
 

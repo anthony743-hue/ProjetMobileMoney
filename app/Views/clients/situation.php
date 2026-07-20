@@ -130,67 +130,55 @@
         }
     </style>
 </head>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Situation des comptes clients</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
 <body>
-
-<?= view('operateur/navbar') ?>
-
-<div class="page-wrapper">
-    <!-- Mini entête de marque -->
-    <div class="brand-mini">
-        <img src="https://cdn-icons-png.flaticon.com/512/2331/2331970.png" alt="KazziPay Logo">
-        <span>KazziPay</span>
-    </div>
-
-    <!-- Carte principale -->
-    <div class="card-gains">
-        <h4><i class="bi bi-graph-up me-2"></i>Situation des gains</h4>
+    <?= view('operateur/navbar') ?>
+    <div class="container">
+        <h2>Situation des comptes clients</h2>
         <hr>
 
-        <?php
-            // Libellés et icônes pour chaque type
-            $types = [
-                'depot'     => ['label' => 'DÉPÔT',    'icon' => 'bi-box-arrow-in-down'],
-                'retrait'   => ['label' => 'RETRAIT',   'icon' => 'bi-box-arrow-up'],
-                'transfert' => ['label' => 'TRANSFERT', 'icon' => 'bi-arrow-left-right']
-            ];
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>Téléphone</th>
+                    <th>Nom</th>
+                    <th>Solde</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach ($clients as $client): ?>
+                    <tr>
+                        <td><?= esc($client['telephone']) ?></td>
+                        <td><?= esc(trim(($client['prenom'] ?? '') . ' ' . ($client['nom'] ?? ''))) ?></td>
+                        <td class="text-end"><?= number_format($client['solde'], 0, ',', ' ') ?> Ar</td>
+                    </tr>
+                <?php endforeach; ?>
+                <?php if (empty($clients)): ?>
+                    <tr><td colspan="3">Aucun client trouvé.</td></tr>
+                <?php endif; ?>
+            </tbody>
+        </table>
 
-            foreach ($types as $key => $infos):
-                $stats = $gainsParType[$key];
-        ?>
-            <div class="stat-card">
-                <div class="stat-icon">
-                    <i class="bi <?= $infos['icon'] ?>"></i>
-                </div>
-                <div class="stat-title"><?= $infos['label'] ?></div>
-                <p class="stat-detail">
-                    Nombre opérations : <strong><?= number_format($stats['nb_operations'], 0, ',', ' ') ?></strong>
-                </p>
-                <p class="stat-detail">
-                    Montant traité : <strong><?= number_format($stats['montant_total'], 0, ',', ' ') ?> Ar</strong>
-                </p>
-                <p class="stat-detail">
-                    Frais encaissés : <strong><?= number_format($stats['frais_total'], 0, ',', ' ') ?> Ar</strong>
-                </p>
-            </div>
-        <?php endforeach; ?>
+        <hr>
 
-        <!-- Total des gains -->
-        <div class="total-card">
-            <div class="total-title">
-                <i class="bi bi-cash-stack"></i> TOTAL DES GAINS
+        <div class="row">
+            <div class="col-md-6">
+                <p><strong>Total clients :</strong> <?= number_format($totaux['total_clients'], 0, ',', ' ') ?></p>
             </div>
-            <div class="total-amount">
-                <?= number_format($totalGains, 0, ',', ' ') ?> Ar
+            <div class="col-md-6 text-end">
+                <p><strong>Total des soldes :</strong> <?= number_format($totaux['total_soldes'], 0, ',', ' ') ?> Ar</p>
             </div>
         </div>
 
-        <!-- Bouton retour -->
-        <div class="mt-4">
-            <a href="/baremes" class="btn-cancel">
-                <i class="bi bi-arrow-left"></i> Retour aux barèmes
-            </a>
+        <div class="mt-3">
+            <a href="/operateur/accueil" class="btn btn-secondary">Retour à l'accueil</a>
         </div>
     </div>
-</div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

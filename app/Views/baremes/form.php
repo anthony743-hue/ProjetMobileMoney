@@ -117,6 +117,7 @@
     </style>
 </head>
 <body>
+    <?= view('operateur/navbar') ?>
     <div class="page-wrapper">
         <!-- Mini entête de marque -->
         <div class="brand-mini">
