@@ -17,6 +17,7 @@ class Database extends Config
     /**
      * Lets you choose which connection group to use if no other is specified.
      */
+    public $DBDebug = true;
     public string $defaultGroup = 'default';
 
     /**
@@ -29,7 +30,7 @@ class Database extends Config
         'hostname'     => '',
         'username'     => '',
         'password'     => '',
-        'database'     => WRITEPATH.'mobile-money.db',
+        'database'     => WRITEPATH.'mobilemoney.db',
         'DBDriver'     => 'SQLite3',
         'DBPrefix'     => '',
         'pConnect'     => false,
