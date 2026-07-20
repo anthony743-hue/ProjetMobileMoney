@@ -244,4 +244,21 @@ public function traitementTransfert()
 
 
 
+public function historique()
+{
+    $client = session()->get('client');
+    if (!$client) {
+        return redirect()->to('/login')->with('error', 'Veuillez vous connecter.');
+    }
+
+    $transactionModel = new \App\Models\TransactionModel();
+    $transactions = $transactionModel->getHistoriqueClient($client['id']);
+
+    return view('client/historique', [
+        'client'       => $client,
+        'transactions' => $transactions,
+    ]);
+}
+
+
 }
