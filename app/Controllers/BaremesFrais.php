@@ -159,4 +159,17 @@ class BaremesFrais extends BaseController
             'operateurId'  => $operateurId,
         ]);
     }
+
+
+    public function reversements()
+{
+    $operateurId = $this->getOperateurId();
+
+    $transactionModel = new \App\Models\TransactionModel();
+    $reversements = $transactionModel->getReversementsParOperateur($operateurId);
+
+    return view('baremes/reversements', [
+        'reversements' => $reversements,
+    ]);
+}
 }

@@ -23,4 +23,12 @@ class OperateurModel extends Model
         }
         return null;
     }
+
+        /**
+     * Récupère un opérateur par son ID.
+     */
+    public function getOperateur(int $id): ?array
+    {
+        return $this->find($id);
+    }
 }

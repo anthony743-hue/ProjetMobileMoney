@@ -131,66 +131,73 @@
     </style>
 </head>
 <body>
-
-<?= view('operateur/navbar') ?>
-
-<div class="page-wrapper">
-    <!-- Mini entête de marque -->
-    <div class="brand-mini">
-        <img src="https://cdn-icons-png.flaticon.com/512/2331/2331970.png" alt="KazziPay Logo">
-        <span>KazziPay</span>
-    </div>
-
-    <!-- Carte principale -->
-    <div class="card-gains">
-        <h4><i class="bi bi-graph-up me-2"></i>Situation des gains</h4>
+    <?= view('operateur/navbar') ?>
+    <div class="container">
+        <h2>Situation des gains</h2>
         <hr>
 
         <?php
-            // Libellés et icônes pour chaque type
-            $types = [
-                'depot'     => ['label' => 'DÉPÔT',    'icon' => 'bi-box-arrow-in-down'],
-                'retrait'   => ['label' => 'RETRAIT',   'icon' => 'bi-box-arrow-up'],
-                'transfert' => ['label' => 'TRANSFERT', 'icon' => 'bi-arrow-left-right']
-            ];
-
-            foreach ($types as $key => $infos):
-                $stats = $gainsParType[$key];
+        $types = ['depot' => 'DÉPÔT', 'retrait' => 'RETRAIT', 'transfert' => 'TRANSFERT'];
+        $totalGainsInternes = 0;
+        $totalGainsExternes = 0;
         ?>
-            <div class="stat-card">
-                <div class="stat-icon">
-                    <i class="bi <?= $infos['icon'] ?>"></i>
+
+        <?php foreach ($types as $key => $label): 
+            $stats = $gainsParType[$key];
+            $fraisFixes = $stats['frais_total'] - $stats['commission_totale'];  // ce qui reste à l'opérateur
+            $commission = $stats['commission_totale'];                          // ce qui sera reversé
+            $totalGainsInternes += $fraisFixes;
+            $totalGainsExternes += $commission;
+        ?>
+        <div class="card mb-3">
+            <div class="card-body">
+                <h5 class="card-title"><?= $label ?></h5>
+                <div class="row">
+                    <div class="col-md-4">
+                        <p class="mb-1">Opérations : <strong><?= number_format($stats['nb_operations'], 0, ',', ' ') ?></strong></p>
+                        <p class="mb-1">Montant traité : <strong><?= number_format($stats['montant_total'], 0, ',', ' ') ?> Ar</strong></p>
+                    </div>
+                    <div class="col-md-4">
+                        <p class="mb-1">Gains internes (frais fixes) :</p>
+                        <p class="fw-bold text-success"><?= number_format($fraisFixes, 0, ',', ' ') ?> Ar</p>
+                    </div>
+                    <div class="col-md-4">
+                        <p class="mb-1">Gains externes (commissions) :</p>
+                        <p class="fw-bold text-warning"><?= number_format($commission, 0, ',', ' ') ?> Ar</p>
+                    </div>
                 </div>
-                <div class="stat-title"><?= $infos['label'] ?></div>
-                <p class="stat-detail">
-                    Nombre opérations : <strong><?= number_format($stats['nb_operations'], 0, ',', ' ') ?></strong>
-                </p>
-                <p class="stat-detail">
-                    Montant traité : <strong><?= number_format($stats['montant_total'], 0, ',', ' ') ?> Ar</strong>
-                </p>
-                <p class="stat-detail">
-                    Frais encaissés : <strong><?= number_format($stats['frais_total'], 0, ',', ' ') ?> Ar</strong>
-                </p>
             </div>
+        </div>
         <?php endforeach; ?>
 
-        <!-- Total des gains -->
-        <div class="total-card">
-            <div class="total-title">
-                <i class="bi bi-cash-stack"></i> TOTAL DES GAINS
+        <hr class="my-4">
+
+        <!-- Récapitulatif global -->
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <div class="card text-bg-success">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">TOTAL GAINS INTERNES</h5>
+                        <p class="display-6"><?= number_format($totalGainsInternes, 0, ',', ' ') ?> Ar</p>
+                        <small>Frais fixes conservés par l'opérateur</small>
+                    </div>
+                </div>
             </div>
-            <div class="total-amount">
-                <?= number_format($totalGains, 0, ',', ' ') ?> Ar
+            <div class="col-md-6 mb-3">
+                <div class="card text-bg-warning">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">TOTAL COMMISSIONS COLLECTÉES</h5>
+                        <p class="display-6"><?= number_format($totalGainsExternes, 0, ',', ' ') ?> Ar</p>
+                        <small>Sommes à reverser aux autres opérateurs</small>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <!-- Bouton retour -->
-        <div class="mt-4">
-            <a href="/baremes" class="btn-cancel">
-                <i class="bi bi-arrow-left"></i> Retour aux barèmes
-            </a>
+        <div class="mt-3">
+            <a href="/operateur/accueil" class="btn btn-secondary">Retour à l'accueil</a>
         </div>
     </div>
-</div>
+    <script src="/assets/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

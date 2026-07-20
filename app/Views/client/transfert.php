@@ -161,67 +161,45 @@
         }
     </style>
 </head>
-<body>
-    <div class="login-wrapper">
-        <!-- Logo + nom -->
-        <div class="brand">
-            <img src="https://cdn-icons-png.flaticon.com/512/2331/2331970.png" alt="KazziPay Logo">
-            <h1>KazziPay</h1>
-            <p>Votre argent, partout, tout le temps</p>
-        </div>
 
-        <!-- Carte de transfert -->
-        <div class="card-operation">
-            <h2><i class="bi bi-arrow-left-right me-2"></i>Transfert d'argent</h2>
-            <hr>
+<body class="p-4">
+    <div class="container" style="max-width: 500px;">
+        <h2>Transfert d'argent</h2>
+        <hr>
 
-            <?php if (session()->getFlashdata('error')): ?>
-                <div class="alert alert-danger flash-message d-flex align-items-center" role="alert">
-                    <i class="bi bi-exclamation-triangle-fill me-2"></i>
-                    <?= session()->getFlashdata('error') ?>
-                </div>
-            <?php endif; ?>
-            <?php if (session()->getFlashdata('success')): ?>
-                <div class="alert alert-success flash-message d-flex align-items-center" role="alert">
-                    <i class="bi bi-check-circle-fill me-2"></i>
-                    <?= session()->getFlashdata('success') ?>
-                </div>
-            <?php endif; ?>
+        <?php if (session()->getFlashdata('error')): ?>
+            <div class="alert alert-danger"><?= session()->getFlashdata('error') ?></div>
+        <?php endif; ?>
 
-            <div class="info-badge">
-                <i class="bi bi-phone"></i>
-                <span><strong>Votre numéro :</strong> <?= esc($client['telephone']) ?></span>
+        <p><strong>Votre numéro :</strong> <?= esc($client['telephone']) ?></p>
+        <p><strong>Solde disponible :</strong> <?= number_format($client['solde'], 0, ',', ' ') ?> Ar</p>
+
+        <form method="post" action="/client/transfert/traitement">
+            <div class="mb-3">
+                <label for="telephone" class="form-label">Numéro du bénéficiaire</label>
+                <input type="text" name="telephone" id="telephone" class="form-control" placeholder="Ex: 0321234567" required>
             </div>
-            <div class="solde-badge">
-                <i class="bi bi-wallet2"></i>
-                <span><strong>Solde disponible :</strong> <?= number_format($client['solde'], 0, ',', ' ') ?> Ar</span>
+            <div class="mb-3">
+                <label for="montant" class="form-label">Montant à transférer (Ar)</label>
+                <input type="number" name="montant" id="montant" class="form-control" step="0.01" required>
             </div>
 
-            <form method="post" action="/client/transfert/traitement">
-                <div class="mb-3">
-                    <label for="telephone" class="form-label">Numéro du bénéficiaire</label>
-                    <div class="input-group">
-                        <span class="input-group-text"><i class="bi bi-person-plus"></i></span>
-                        <input type="text" name="telephone" id="telephone" class="form-control" placeholder="Ex: 0321234567" required>
-                    </div>
+            <!-- Case à cocher pour frais inclus -->
+            <div class="mb-3 form-check">
+                <input type="checkbox" name="frais_inclus" id="frais_inclus" class="form-check-input" value="1">
+                <label class="form-check-label" for="frais_inclus">
+                    Inclure les frais dans le montant saisi
+                </label>
+                <div class="form-text">
+                    Si coché, le montant saisi correspond au <strong>total</strong> que vous souhaitez débiter (montant transféré + frais).
                 </div>
-                <div class="mb-3">
-                    <label for="montant" class="form-label">Montant à transférer (Ar)</label>
-                    <div class="input-group">
-                        <span class="input-group-text"><i class="bi bi-cash"></i></span>
-                        <input type="number" name="montant" id="montant" class="form-control" step="0.01" placeholder="0.00" required>
-                    </div>
-                </div>
-                <button type="submit" class="btn btn-transfert w-100 mt-2">
-                    <i class="bi bi-send-check me-2"></i>Transférer
-                </button>
-            </form>
-
-            <div class="mt-3">
-                <a href="/client/espace" class="btn-retour">
-                    <i class="bi bi-arrow-left"></i> Retour
-                </a>
             </div>
+
+            <button type="submit" class="btn btn-info w-100">Transférer</button>
+        </form>
+
+        <div class="mt-3">
+            <a href="/client/espace" class="btn btn-secondary">Retour</a>
         </div>
     </div>
 </body>

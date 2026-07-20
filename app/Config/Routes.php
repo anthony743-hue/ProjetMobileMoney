@@ -23,6 +23,23 @@ $routes->group('', ['filter' => 'operateurAuth'], function ($routes) {
     
     // Clients
     $routes->get('/clients/situation', 'Clients::situation');
+
+
+
+
+    // Préfixes
+    $routes->get('prefixes', 'Prefixes::index');
+    $routes->get('prefixes/ajouter', 'Prefixes::ajouter');
+    $routes->post('prefixes/ajouter', 'Prefixes::ajouter');
+    $routes->get('prefixes/modifier/(:num)', 'Prefixes::modifier/$1');
+    $routes->post('prefixes/modifier/(:num)', 'Prefixes::modifier/$1');
+    $routes->get('prefixes/supprimer/(:num)', 'Prefixes::supprimer/$1');
+
+
+
+    $routes->get('operateurs/profil', 'Operateurs::profil');
+$routes->post('operateurs/profil', 'Operateurs::profil');
+$routes->get('baremes/reversements', 'BaremesFrais::reversements');
 });
 
 

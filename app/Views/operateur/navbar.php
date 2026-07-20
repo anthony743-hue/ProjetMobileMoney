@@ -14,6 +14,9 @@
                     <a class="nav-link dropdown-toggle d-flex align-items-center gap-1" href="#" id="baremesDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                         <i class="bi bi-sliders"></i> Barèmes
                     </a>
+                    <li class="nav-item">
+                    <a class="nav-link" href="/prefixes">Préfixes</a>
+                    </li>
                     <ul class="dropdown-menu" aria-labelledby="baremesDropdown" style="border-radius: 12px; border: none; box-shadow: 0 8px 24px rgba(0,0,0,0.1);">
                         <li><a class="dropdown-item d-flex align-items-center gap-2" href="/baremes"><i class="bi bi-list-ul"></i> Liste des barèmes</a></li>
                         <li><a class="dropdown-item d-flex align-items-center gap-2" href="/baremes/ajouter?type=depot"><i class="bi bi-plus-circle"></i> Ajouter un barème</a></li>
@@ -29,6 +32,16 @@
                         <i class="bi bi-people-fill"></i> Situation des clients
                     </a>
                 </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="/operateurs/profil">Commission</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/baremes/reversements">Reversements</a>
+                </li>
+
+
+
             </ul>
             <div class="d-flex align-items-center gap-3">
                 <span class="navbar-text text-white">
