@@ -21,3 +21,11 @@ $routes->get('login', 'Auth::login');
 $routes->post('login', 'Auth::login');
 $routes->get('logout', 'Auth::logout');
 $routes->get('client/espace', 'Client::espace');
+
+
+
+
+$routes->get('client/depot', 'Client::depot');
+$routes->post('client/depot/traitement', 'Client::traitementDepot');
+$routes->get('client/retrait', 'Client::retrait');
+$routes->post('client/retrait/traitement', 'Client::traitementRetrait');

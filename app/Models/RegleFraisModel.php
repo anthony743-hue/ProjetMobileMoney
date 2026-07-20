@@ -47,4 +47,22 @@ class RegleFraisModel extends Model
 
         return $builder->countAllResults() > 0;
     }
+
+
+
+
+    /**
+ * Calcule les frais pour un montant donné, un opérateur et un type de transaction.
+ * Retourne les frais applicables, ou null si aucune règle ne correspond.
+ */
+public function getFrais(int $operateurId, string $type, float $montant): ?float
+{
+    $regle = $this->where('operateur_id', $operateurId)
+                  ->where('type_transaction', $type)
+                  ->where('montant_min <=', $montant)
+                  ->where('montant_max >=', $montant)
+                  ->first();
+
+    return $regle ? (float) $regle['frais'] : null;
+}
 }
