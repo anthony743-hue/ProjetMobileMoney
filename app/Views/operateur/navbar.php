@@ -1,4 +1,4 @@
-<!-- Barre de navigation KazziPay -->
+<!-- Barre de navigation KazziPay (corrigée) -->
 <nav class="navbar navbar-expand-lg navbar-dark mb-4" style="background: #27ae60; box-shadow: 0 8px 20px rgba(39, 174, 96, 0.3); font-family: 'Nunito', sans-serif; border-radius: 0 0 16px 16px;">
     <div class="container">
         <a class="navbar-brand fw-bold d-flex align-items-center gap-2" href="/operateur/accueil">
@@ -10,38 +10,46 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarOperateur">
             <ul class="navbar-nav me-auto">
+                <!-- Barèmes (dropdown) -->
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle d-flex align-items-center gap-1" href="#" id="baremesDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                         <i class="bi bi-sliders"></i> Barèmes
                     </a>
-                    <li class="nav-item">
-                    <a class="nav-link" href="/prefixes">Préfixes</a>
-                    </li>
                     <ul class="dropdown-menu" aria-labelledby="baremesDropdown" style="border-radius: 12px; border: none; box-shadow: 0 8px 24px rgba(0,0,0,0.1);">
                         <li><a class="dropdown-item d-flex align-items-center gap-2" href="/baremes"><i class="bi bi-list-ul"></i> Liste des barèmes</a></li>
                         <li><a class="dropdown-item d-flex align-items-center gap-2" href="/baremes/ajouter?type=depot"><i class="bi bi-plus-circle"></i> Ajouter un barème</a></li>
                     </ul>
                 </li>
+                <!-- Préfixes -->
+                <li class="nav-item">
+                    <a class="nav-link d-flex align-items-center gap-1" href="/prefixes">
+                        <i class="bi bi-phone"></i> Préfixes
+                    </a>
+                </li>
+                <!-- Situation des gains -->
                 <li class="nav-item">
                     <a class="nav-link d-flex align-items-center gap-1" href="/baremes/situation">
                         <i class="bi bi-graph-up"></i> Situation des gains
                     </a>
                 </li>
+                <!-- Situation des clients -->
                 <li class="nav-item">
                     <a class="nav-link d-flex align-items-center gap-1" href="/clients/situation">
                         <i class="bi bi-people-fill"></i> Situation des clients
                     </a>
                 </li>
-
+                <!-- Commission -->
                 <li class="nav-item">
-                    <a class="nav-link" href="/operateurs/profil">Commission</a>
+                    <a class="nav-link d-flex align-items-center gap-1" href="/operateurs/profil">
+                        <i class="bi bi-percent"></i> Commission
+                    </a>
                 </li>
+                <!-- Reversements -->
                 <li class="nav-item">
-                    <a class="nav-link" href="/baremes/reversements">Reversements</a>
+                    <a class="nav-link d-flex align-items-center gap-1" href="/baremes/reversements">
+                        <i class="bi bi-arrow-repeat"></i> Reversements
+                    </a>
                 </li>
-
-
-
             </ul>
             <div class="d-flex align-items-center gap-3">
                 <span class="navbar-text text-white">
@@ -56,6 +64,6 @@
     </div>
 </nav>
 
-<!-- Nécessite l'inclusion de Bootstrap Icons (CDN ou local) et de la police Nunito -->
+<!-- Dépendances (à placer dans le <head> ou en fin de page) -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">

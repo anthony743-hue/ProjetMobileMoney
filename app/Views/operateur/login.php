@@ -118,6 +118,21 @@
             font-size: 14px;
             font-weight: 500;
         }
+        .link-footer {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 13px;
+            color: #7f8c8d;
+        }
+        .link-footer a {
+            color: #7f8c8d;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        .link-footer a:hover {
+            color: #2c3e50;
+            text-decoration: underline;
+        }
     </style>
 </head>
 <body>
@@ -161,6 +176,12 @@
                     <i class="bi bi-box-arrow-in-right me-2"></i>Se connecter
                 </button>
             </form>
+
+            <!-- Liens de navigation -->
+            <div class="link-footer">
+                <a href="/login"><i class="bi bi-people"></i> Espace client</a> &nbsp;|&nbsp;
+                <a href="/"><i class="bi bi-house"></i> Accueil</a>
+            </div>
         </div>
     </div>
 </body>

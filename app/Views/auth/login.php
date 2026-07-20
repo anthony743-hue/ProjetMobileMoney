@@ -114,13 +114,26 @@
         .info-text i {
             margin-right: 4px;
         }
+        .link-footer {
+            margin-top: 15px;
+            text-align: center;
+            font-size: 13px;
+        }
+        .link-footer a {
+            color: #7f8c8d;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        .link-footer a:hover {
+            color: #2c3e50;
+            text-decoration: underline;
+        }
     </style>
 </head>
 <body>
     <div class="login-wrapper">
         <!-- Logo + nom de l'app -->
         <div class="brand">
-            <!-- Remplacez le src par votre propre logo -->
             <img src="https://cdn-icons-png.flaticon.com/512/2331/2331970.png" alt="KazziPay Logo">
             <h1>KazziPay</h1>
             <p>Votre argent, partout, tout le temps</p>
@@ -161,6 +174,12 @@
 
             <div class="mt-3 text-center info-text">
                 <i class="bi bi-info-circle"></i> Pas de compte ? Il sera créé automatiquement.
+            </div>
+
+            <!-- Liens de navigation -->
+            <div class="link-footer">
+                <a href="/operateur/login"><i class="bi bi-shield-lock"></i> Espace opérateur</a> &nbsp;|&nbsp;
+                <a href="/"><i class="bi bi-house"></i> Accueil</a>
             </div>
         </div>
     </div>

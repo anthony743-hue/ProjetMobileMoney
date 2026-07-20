@@ -33,9 +33,9 @@ class OperateurAuth extends BaseController
         return view('operateur/login');
     }
 
-    public function logout()
-    {
-        session()->remove('operateur');
-        return redirect()->to('/operateur/login')->with('success', 'Déconnexion réussie.');
-    }
+public function logout()
+{
+    session()->remove('operateur');
+    return redirect()->to('/')->with('success', 'Déconnexion réussie.');
+}
 }
